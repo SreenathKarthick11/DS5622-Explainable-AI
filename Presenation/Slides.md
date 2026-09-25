@@ -355,8 +355,6 @@ These numbers are directly from the paper's illustrative ACS Income example: con
 
 # The Core Problem
 
-
-
 <div class="box-danger">
 
 <div class="box-title">Concern</div>
@@ -364,17 +362,52 @@ These numbers are directly from the paper's illustrative ACS Income example: con
 *“An auditor wants to know whether an AI is using a protected attribute. SHAP seems to provide an answer. But if simply changing how that feature is represented can change its apparent importance, how reliable is that answer?”*
 </div>
 
-<div class="box">
+<div class="box-note">
 
 <div class="box-title">The question</div>
 
-**But Isn't SHAP Supposed to Explain the Model?**
+But isn't SHAP supposed to explain the model?
 
-What happens when we change **how a feature is represented**? 
-
-Can this be gamed?
+What happens when we change how a feature is represented? Can this be gamed?
 
 </div>
+
+---
+
+<!-- _class: lead -->
+
+# SHAP
+
+### Shapley values quantify each feature's contribution to a model prediction.
+<br>
+
+$$
+\phi_i(f,x)
+=
+\sum_{S \subseteq N \setminus \{i\}}
+\frac{|S|!(|N|-|S|-1)!}{|N|!}
+\left[
+f_x(S \cup \{i\}) - f_x(S)
+\right]
+$$
+
+<div class="box">
+
+<div class="box-title">Inference</div>
+
+Feature contribution values for a particular prediction.
+
+</div>
+
+---
+
+<!-- _class: section -->
+
+# The Hidden Variable
+
+## Feature Representation
+
+The Feature is the same. The Representation is not.
 
 ---
 
