@@ -447,26 +447,37 @@ Each interval contains roughly the same number of observations.
 
 <div class="two-col">
 
+<div>
+
 <div class="box">
 
 <div class="box-title">Original Categories</div>
 
-*One category -> one representation*
+*One category → one representation*
 
 We can encode categories individually, or change how categories are grouped or encoded.
 
-</div> 
+
+</div>
+
+
+<div class="box-warning">
+
+<div class="box-title">Why does this matter?</div>
+
+Same semantic attribute → different feature representation → potentially different SHAP explanation
+
+</div>
+
+</div>
 
 <div class="image-container">
 
-![h:340](../Images/bucket_cat.png)
-</div>
+![h:390px](../Images/bucket_cat.png)
 
 </div>
-<div class="box-warning"> 
-
-<div class="box-title">Why does this matter</div>
-
-Same semantic attribute -> different feature representation -> potentially different SHAP explanation
 
 </div>
+
+---
+
