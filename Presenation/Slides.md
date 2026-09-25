@@ -411,3 +411,62 @@ The Feature is the same. The Representation is not.
 
 ---
 
+<!-- _class: lead -->
+
+## Continuous Features: Bucketization
+
+<div class="two-col">
+
+<div class="box">
+
+<div class="box-title">Equi-Width</div>
+
+Each interval has the same numerical width.
+
+</div> 
+
+<div class="box"> 
+
+<div class="box-title">Equi-Depth</div>
+
+Each interval contains roughly the same number of observations.
+
+</div>
+</div> 
+
+<div class="image-container">
+
+![h:260px](../Images/buckets.png)
+</div>
+
+---
+
+<!-- _class: lead -->
+
+## Categorical Features: Encoding
+
+<div class="two-col">
+
+<div class="box">
+
+<div class="box-title">Original Categories</div>
+
+*One category -> one representation*
+
+We can encode categories individually, or change how categories are grouped or encoded.
+
+</div> 
+
+<div class="image-container">
+
+![h:340](../Images/bucket_cat.png)
+</div>
+
+</div>
+<div class="box-warning"> 
+
+<div class="box-title">Why does this matter</div>
+
+Same semantic attribute -> different feature representation -> potentially different SHAP explanation
+
+</div>
