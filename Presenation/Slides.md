@@ -307,5 +307,46 @@ M Murali Karthick (112301019)
 
 ---
 
+<!-- _class: lead -->
+
+## What If We Change Only How Age Is Represented?
 
 
+<div class="two-col">
+
+<div class="box">
+
+<div class="box-title">Continuous Value Represenation</div>
+
+Age : 30
+```text
+Rank #1         
+SHAP = 0.99
+```
+
+</div>
+
+<div class="box">
+
+<div class="box-title">Bucket Value Representation</div>
+
+Age bucket : 25 - 35
+```text
+Rank #5
+SHAP = 0.37
+```
+</div>
+
+</div>
+
+<div class="box-note">
+
+<div class="box-title">Note</div>
+
+<b> No changes in Model or Explanation </b>
+
+These numbers are directly from the paper's illustrative ACS Income example: continuous age vs 12-bucket equi-width encoding .
+
+</div>
+
+---
