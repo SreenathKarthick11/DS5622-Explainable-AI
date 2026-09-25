@@ -225,6 +225,17 @@ style: |
     color: #DCFCE7;
   }
 
+  .image-container {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto;
+    margin-top:0px;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
   /* HEADER / FOOTER */
 
   header {
@@ -253,3 +264,48 @@ M Murali Karthick (112301019)
 </span>
 
 ---
+
+
+<!-- _class: lead -->
+
+# The Auditor's Problem
+
+## Can we trust what an AI Explanation tells us?
+
+<br>
+
+> **A bank uses an AI model to decide loan applications.**
+> 
+> Ann is rejected.
+> 
+> The auditor asks:
+> 
+> **“Did the model use Ann's age to make this decision?”**
+
+---
+
+
+<div class="two-col">
+
+<div class="image-container">
+
+![h:250px](../Images/shap_ann.png)
+</div>
+
+<div class="image-container">
+
+![h:300px](../Images/shap_ann2.png)
+</div>
+
+</div>
+
+<br>
+
+<div class="box-warning">
+<div class="box-title">How much can we trust that explanation?</div>
+</div>
+
+---
+
+
+
