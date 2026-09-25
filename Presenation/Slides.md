@@ -318,7 +318,7 @@ M Murali Karthick (112301019)
 
 <div class="box-title">Continuous Value Represenation</div>
 
-Age : 30
+*Age : 30*
 ```text
 Rank #1         
 SHAP = 0.99
@@ -330,7 +330,7 @@ SHAP = 0.99
 
 <div class="box-title">Bucket Value Representation</div>
 
-Age bucket : 25 - 35
+*Age bucket : 25 - 35*
 ```text
 Rank #5
 SHAP = 0.37
@@ -350,3 +350,31 @@ These numbers are directly from the paper's illustrative ACS Income example: con
 </div>
 
 ---
+
+<!-- _class: lead -->
+
+# The Core Problem
+
+
+
+<div class="box-danger">
+
+<div class="box-title">Concern</div>
+
+*“An auditor wants to know whether an AI is using a protected attribute. SHAP seems to provide an answer. But if simply changing how that feature is represented can change its apparent importance, how reliable is that answer?”*
+</div>
+
+<div class="box">
+
+<div class="box-title">The question</div>
+
+**But Isn't SHAP Supposed to Explain the Model?**
+
+What happens when we change **how a feature is represented**? 
+
+Can this be gamed?
+
+</div>
+
+---
+
