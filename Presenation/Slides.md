@@ -657,3 +657,32 @@ More buckets implies more importance
 </div>
 
 ---
+
+<!-- _class: lead -->
+
+# Inference
+
+<div class="box">
+<div class="box-title">What we have seen</div>
+
+Changing the <b>feature representation</b> can change the SHAP explanation.
+
+</div>
+
+<div class="box-danger">
+<div class="box-title">The concern</div>
+
+<b>If representation affects what the auditor sees,
+could someone deliberately choose a representation to hide a feature's importance?</b>
+
+</div>
+
+---
+
+<!-- _class: section -->
+
+# Feature-Engineering Attack
+
+## How Do You Hide a Feature From SHAP?
+
+---
