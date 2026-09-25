@@ -546,4 +546,74 @@ Can a representation be chosen to reduce the apparent importance of a protected 
 
 ---
 
+<!-- _class: section -->
 
+# Inference from the Paper
+
+## Experiments, Results & Key Findings
+
+---
+
+<!-- _class: lead -->
+
+## The Experimental Setup
+
+<div class="two-col">
+
+<div class="box">
+
+<div class="box-title">Datasets</div>
+
+<b>ACS Income</b>
+
+46,144 observations  & 8 features
+
+<b>ACS Public Coverage</b>
+
+25,524 observations & 16 features
+
+</div>
+
+<div class="box">
+
+<div class="box-title">Model</div>
+
+<b>XGBoost</b>
+
+State-of-the-art ensemble classifier
+
+Hyperparameter tuning  
+for overall accuracy
+
+</div>
+
+</div>
+
+<div class="two-col">
+
+<div class="box">
+
+<div class="box-title">Protected Features</div>
+
+```text
+Age 
+Race
+```
+
+Both treated as protected features.
+
+</div>
+
+<div class="box">
+
+<div class="box-title">Explanation & Evaluation</div>
+
+- SHAP value
+- SHAP rank
+- Fidelity
+
+</div>
+
+</div>
+
+---
