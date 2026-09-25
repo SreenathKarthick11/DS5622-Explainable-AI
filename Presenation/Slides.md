@@ -481,3 +481,30 @@ Same semantic attribute → different feature representation → potentially dif
 
 ---
 
+<!-- _class: lead -->
+
+# Why Could Bucket Size Change SHAP?
+
+<div class="box">
+
+<div class="box-title">1. Bucket size changes the information available</div>
+
+Smaller buckets preserve more of the original feature information.
+
+Larger buckets <b>merge more values together</b>, making the representation coarser.
+
+</div>
+
+<div class="box">
+
+<div class="box-title">2. SHAP works with that representation</div>
+
+SHAP measures the feature's <b>marginal contribution</b> to the prediction.
+
+When the representation changes, the contribution being measured can also change.
+
+</div>
+
+---
+
+
