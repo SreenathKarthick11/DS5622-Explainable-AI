@@ -617,3 +617,43 @@ Both treated as protected features.
 </div>
 
 ---
+
+<!-- _class: lead -->
+
+## Finding #1: Age
+
+<div class="image-container">
+
+![h:340px](../Images/age_res1.png)
+</div>
+
+---
+
+<!-- _class: lead -->
+
+## Finding #1: Age
+
+
+<div class="image-container">
+
+![h:310px](../Images/age_res2.png)
+</div>
+
+<div class="box">
+
+<div class="box-title">Inference</div>
+More buckets implies more importance
+</div>
+
+---
+
+<!-- _class: lead -->
+
+## Finding #2: Race
+
+<div class="image-container">
+
+![h:440px](../Images/race_res1.png)
+</div>
+
+---
