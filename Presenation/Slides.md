@@ -507,4 +507,43 @@ When the representation changes, the contribution being measured can also change
 
 ---
 
+<!-- _class: lead -->
+
+## From Sensitivity to Exploitability
+
+<div class="two-col">
+
+<div class="box">
+
+**1. How sensitive are SHAP explanations to feature engineering?**
+
+Does changing the feature representation  
+change its apparent importance?
+
+</div>
+
+<div class="box">
+
+**2.Can this sensitivity be deliberately exploited?**
+
+Can a representation be chosen to reduce the apparent importance of a protected feature?
+
+</div>
+
+</div>
+
+<div class="box">
+
+**3. If the SHAP values change, are they still faithful to the original prediction?**
+</div>
+
+<div class="box-note">
+
+<div class="box-title">Definition</div>
+<b>Fidelity</b> : proportion of observations for which the explanation corresponds to the originally predicted outcome.
+
+</div>
+
+---
+
 
