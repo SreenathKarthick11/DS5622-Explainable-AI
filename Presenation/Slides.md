@@ -686,3 +686,87 @@ could someone deliberately choose a representation to hide a feature's importanc
 ## How Do You Hide a Feature From SHAP?
 
 ---
+
+<!-- _class: lead -->
+
+## Bayesian Optimization Can Hide Protected Features
+
+<div class="two-col">
+
+<div>
+
+<div class="image-container">
+
+![h:340px](../Images/bo_age1.png)
+</div>
+
+</div>
+
+<div>
+
+<div class="image-container">
+
+![h:340px](../Images/bo_age2.png)
+
+</div>
+
+</div>
+
+</div>
+
+<div class="box">
+
+**Bayesian Optimization (BO)** searches the representation space
+for a transformation that satisfies both objectives.
+
+</div>
+
+---
+
+
+<!-- _class: lead -->
+
+## Bayesian Optimization Can Hide Protected Features
+
+<div class="two-col">
+
+<div>
+
+<div class="image-container">
+
+![h:300px](../Images/bo_race1.png)
+</div>
+
+</div>
+
+<div>
+
+<div class="image-container">
+
+![h:300px](../Images/bo_race2.png)
+
+</div>
+
+</div>
+
+</div>
+
+<div class="box-note">
+<div class="box-title">What do we observe?</div>
+
+Bayesian Optimization finds representations that push the protected feature to a lower SHAP importance .
+
+$$
+\boxed{
+\min_{\tau \in \mathcal{T}}
+-\operatorname{SHAP\_Rank}(a,f,D)
+\quad
+\text{s.t.}
+\quad
+\lambda > \epsilon
+}
+$$
+
+</div>
+
+---
