@@ -770,3 +770,36 @@ $$
 </div>
 
 ---
+
+<!-- _class: lead -->
+
+## Final Takeaway
+
+<div class="box">
+<div class="box-title">The Key Lesson</div>
+
+SHAP explanations depend on how features are represented.
+
+</div>
+
+<div class="box">
+<div class="box-title">What the Paper Shows</div>
+
+Feature representation can change SHAP importance and this sensitivity can be deliberately exploited while maintaining high fidelity.
+
+</div>
+
+<div class="box-warning">
+<div class="box-title">For Auditing</div>
+
+*Don't inspect only the model and its explanation.*
+
+The data-engineering pipeline and feature representation are also part of the explanation.
+
+</div>
+
+---
+
+<!-- _class: section -->
+
+# QUESTIONS ?
