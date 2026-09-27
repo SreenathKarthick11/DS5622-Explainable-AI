@@ -687,41 +687,6 @@ could someone deliberately choose a representation to hide a feature's importanc
 
 ---
 
-<!-- _class: lead -->
-
-## Bayesian Optimization Can Hide Protected Features
-
-<div class="two-col">
-
-<div>
-
-<div class="image-container">
-
-![h:340px](../Images/bo_age1.png)
-</div>
-
-</div>
-
-<div>
-
-<div class="image-container">
-
-![h:340px](../Images/bo_age2.png)
-
-</div>
-
-</div>
-
-</div>
-
-<div class="box">
-
-**Bayesian Optimization (BO)** searches the representation space
-for a transformation that satisfies both objectives.
-
-</div>
-
----
 
 
 <!-- _class: lead -->
@@ -766,6 +731,42 @@ $$
 \lambda > \epsilon
 }
 $$
+
+</div>
+
+---
+
+<!-- _class: lead -->
+
+## Bayesian Optimization Can Hide Protected Features
+
+<div class="two-col">
+
+<div>
+
+<div class="image-container">
+
+![h:340px](../Images/bo_age1.png)
+</div>
+
+</div>
+
+<div>
+
+<div class="image-container">
+
+![h:340px](../Images/bo_age2.png)
+
+</div>
+
+</div>
+
+</div>
+
+<div class="box">
+
+**Bayesian Optimization (BO)** searches the representation space
+for a transformation that satisfies both objectives.
 
 </div>
 
