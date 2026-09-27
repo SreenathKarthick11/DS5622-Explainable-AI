@@ -1,1162 +1,614 @@
 
 
-**14 slides**. The story is:
+# Slide 1 — The Auditor's Problem
 
-> **“An auditor wants to know whether an AI is using a protected attribute. SHAP seems to give the answer. But then we discover that simply changing how the feature is represented can change the answer.”**
+### What to say
 
-
----
-
-# Slide 1 - The Auditor's Problem
-
-### Title
-
-**Can We Trust What an AI Explanation Tells Us?**
-
-### Put on the slide
-
-Use a large scenario rather than technical content:
-
-> **A bank uses an AI model to decide loan applications.**
-> 
-> Ann is rejected.
-> 
-> The auditor asks:
-> 
-> **“Did the model use Ann's age to make this decision?”**
-
-Then put a small SHAP-style visualization on the right:
-
-```text
-Why was Ann rejected?
-
-Age             ██████████  +0.99
-Income          █████       +0.52
-Debt            ███         +0.31
-Employment      ██          +0.18
-...
-```
-
-### Image to use
-
-A simple illustration:
-
-**Auditor → AI model → Loan decision**
-
-with Ann's profile somewhere in the diagram.
-
-You could have:
-
-```text
-             ┌─────────────┐
-Ann ────────→│  AI Model   │──────→ REJECTED
-             └─────────────┘
-                    ↑
-                    │
-                 SHAP
-                    │
-             "Age was important"
-                    ↑
-                 Auditor
-```
-
-Don't use a real bank logo. A generic illustration is better.
-
-### What you say
-
-> “Let's start with a situation. Imagine you're an auditor investigating an AI system used by a bank. Ann applies for a loan and the model rejects her.
-> 
-> As an auditor, one of the things you want to know is whether the model relied on a protected attribute such as age.
-> 
-> You don't have access to the entire development pipeline. But you do have the model and you can generate SHAP explanations.
-> 
-> And SHAP tells you that age was one of the most important features.
-> 
-> So naturally, you might think: _Okay, the model is using age._
-> 
-> But this paper asks a much more subtle question:
-> 
-> **How much can we trust that explanation?**”
+> “Let me start with a situation.
+>
+> Imagine that a bank uses an AI model to decide whether someone should get a loan.
+>
+> Now suppose Ann applies for a loan, and the model rejects her.
+>
+> As an auditor, I want to understand why this happened.
+>
+> In particular, I want to know whether the model used a protected attribute, such as age, while making this decision.
+>
+> So I use an explanation method like SHAP to inspect the model's decision.
+>
+> And this gives me a seemingly straightforward way to answer the question:
+>
+> **Did age actually influence the decision?**
+>
+> But the paper shows that this question is not as straightforward as it first appears.”
 
 ---
 
-# Slide 2 - Something Strange Happens
+# Slide 2 — How Much Can We Trust That Explanation?
 
-### Title
+### What to say
 
-**What If We Change Only How Age Is Represented?**
+> “So this leads us to the main question of the presentation:
+>
+> **How much can we actually trust that explanation?**
+>
+> If SHAP tells me that age is important, I would normally assume that this is evidence that the model is relying on age.
+>
+> But what if the explanation depends not only on the model, but also on how the input features were represented?
+>
+> That is the problem the authors investigate.
+>
+> And the interesting part is that the representation can be changed without necessarily changing what the underlying feature means.”
 
-This is your **first big reveal**.
+### Transition
 
-### Put on slide
-
-Show:
-
-```text
-                    SAME MODEL
-                        │
-              ┌─────────┴─────────┐
-              │                   │
-           Age = 30            Age < 50
-              │                   │
-             SHAP                SHAP
-              │                   │
-          Rank #1              Rank #5
-          SHAP = 0.99          SHAP = 0.37
-              │                   │
-              └─────────┬─────────┘
-                        ↓
-               SAME PREDICTION
-               DIFFERENT STORY
-```
-
-These numbers are directly from the paper's illustrative ACS Income example: continuous age had SHAP weight **0.99 and rank 1**, while after 12-bucket equi-width encoding it became **0.37 and rank 5**, with the model and explainer fixed.
-
-### Image
-
-**Do NOT use a generic SHAP image here.**
-
-Make this slide yourself with two side-by-side representations:
-
-```text
-Age
-30
-```
-
-versus
-
-```text
-Age bucket
-25 ─── 35
-     ↑
-    30
-```
-
-Then put the two SHAP bars underneath.
-
-### What you say
-
-> “Now here's where things get interesting.
-> 
-> We haven't changed the model.
-> 
-> We haven't changed the person.
-> 
-> We've only changed how age is represented.
-> 
-> In the original representation, SHAP gives age a weight of 0.99 and ranks it first.
-> 
-> After bucketizing age, the importance falls to 0.37 and age drops to fifth place.
-> 
-> So the prediction can stay the same, while the explanation changes dramatically.
-> 
-> **That's the problem this paper starts investigating.**”
-
-Pause here.
+> “So let's see what happens if we change only the representation of age.”
 
 ---
 
-# Slide 3 - But Isn't SHAP Supposed to Explain the Model?
+# Slide 3 — What If We Change Only How Age Is Represented?
 
-### Title
+### What to say
 
-**What Exactly Is SHAP Explaining?**
+> “Here is the key example from the paper.
+>
+> Consider a particular individual from the ACS Income dataset.
+>
+> Initially, age is represented as a continuous value.
+>
+> For this individual, SHAP considers age to be the most important feature. Its SHAP weight is 0.99, and it has rank 1.
+>
+> Now the authors do something very simple.
+>
+> They bucketize age.
+>
+> Instead of representing the person's exact age, they represent it using an age interval. In the paper's example, age is divided into 12 equi-width intervals, and the interval is represented using its median.
+>
+> And suddenly, the SHAP value for age becomes 0.37 and its rank drops from **1 to 5**.
+>
+> And here's the important part:
+>
+> **The classifier model and the SHAP explainer remain fixed.**
+>
+> The only thing that changed for this individual was how the age feature was represented.
+>
+> So we have the same person, the same model, and the same prediction—but a different explanation.”
 
-### Put on slide
+### Strong pause here.
 
-Keep it extremely simple.
-
-```text
-              MODEL PREDICTION
-                     │
-                     ↓
-                   SHAP
-                     │
-        ┌────────────┼────────────┐
-        ↓            ↓            ↓
-      Age          Income       Education
-      +0.42         +0.31         -0.18
-```
-
-Then a small statement:
-
-> **SHAP assigns contribution values to features for a prediction.**
-
-### Optional visual
-
-A simple SHAP waterfall plot.
-
-If you use an actual SHAP waterfall screenshot, make sure it is clearly labeled as an illustrative/example SHAP plot rather than claiming it is from the paper.
-
-### What you say
-
-> “Before going further, let's quickly establish what SHAP is doing.
-> 
-> SHAP gives us feature contribution values for a particular prediction.
-> 
-> In a local explanation, we can look at the features and ask: which ones contributed most strongly to this prediction?
-> 
-> So if age has a large SHAP value, we might interpret that as age being important for this decision.
-> 
-> And that is exactly why SHAP is useful for auditing.
-> 
-> But the paper asks whether this explanation is stable when we change the representation of the underlying features.”
+> “And that is where the paper's problem begins.”
 
 ---
 
-# Slide 4 - The Hidden Variable: Feature Representation
+# Slide 4 — The Core Problem
 
-### Title
+### What to say
 
-**The Feature Is the Same. The Representation Is Not.**
-
-### Put on slide
-
-Use a visual progression:
-
-```text
-               AGE
-                │
-      ┌─────────┼──────────┐
-      ↓         ↓          ↓
-     30       30–40       < 50
-```
-
-Then categorical example:
-
-```text
-RACE
-
-White
-Black
-Asian
-Other
-
-        ↓ regroup
-
-White + Black
-Asian + Other
-```
-
-### Main message
-
-Put this in a box:
-
-> **Same semantic attribute ≠ same representation**
-
-### Image
-
-This slide should be almost entirely your own diagram.
-
-Use **bucket graphics**:
-
-```text
-17 ───── 30 ───── 50 ───── 70 ───── 94
-          │
-        Age = 30
-```
-
-then:
-
-```text
-17 ─────────────── 50 ─────────────── 94
-         Age < 50
-```
-
-### What you say
-
-> “Feature engineering gives us many ways of representing the same underlying concept.
-> 
-> Age can be kept as an exact continuous value.
-> 
-> Or we can turn it into age groups.
-> 
-> Race can have several categories, or categories can be merged.
-> 
-> From a human perspective, we're still talking about the same underlying attribute.
-> 
-> But SHAP doesn't operate on some abstract concept of 'age.'
-> 
-> It operates on the representation given to it.
-> 
-> And that is the hidden variable the paper investigates.”
+> “So let's formulate the problem clearly.
+>
+> An auditor wants to know whether an AI system is using a protected attribute.
+>
+> SHAP seems to give us an answer by telling us which features are important.
+>
+> But we have just seen that simply changing the representation of a feature can change its apparent importance.
+>
+> So now we have two questions.
+>
+> First:
+>
+> **Is SHAP actually sensitive to these feature-engineering choices?**
+>
+> And second:
+>
+> **If it is sensitive, can somebody deliberately exploit that sensitivity to make a protected feature look less important?**
+>
+> Before answering those questions, let's briefly understand what SHAP is actually doing.”
 
 ---
 
-# Slide 5 - Why Could This Change SHAP?
+# Slide 5 — SHAP
 
-### Title
+### What to say
 
-**A Small Preprocessing Choice Can Change the Explanation**
-
-### Put on slide
-
-Show:
-
-```text
-Continuous
-
-17 18 19 20 21 22 23 24 ...
-│  │  │  │  │  │  │  │
-Precise information
-```
-
-versus
-
-```text
-Bucketized
-
-17 ───────── 30
-31 ───────── 50
-51 ───────── 70
-71 ───────── 94
-
-Coarser information
-```
-
-Then:
-
-```text
-Representation
-      ↓
-Model / SHAP input
-      ↓
-Feature contribution
-      ↓
-Explanation
-```
-
-### What you say
-
-> “Why should this matter?
-> 
-> When we bucketize a feature, we're changing the information available in that representation.
-> 
-> Instead of saying someone is exactly 31, we might say they're in the 30-to-40 bucket.
-> 
-> The model and the explanation mechanism now see a different representation.
-> 
-> And that can change how much contribution SHAP attributes to that feature.
-> 
-> The important point is that bucketization isn't necessarily suspicious. It's a completely normal data-engineering operation.
-> 
-> That's what makes the problem interesting.”
+> “SHAP is based on Shapley values from cooperative game theory.
+>
+> The basic idea is that for a particular prediction, we want to distribute the model's output among the input features according to their contribution.
+>
+> So for one prediction, we might get something like:
+>
+> age contributes this much,
+>
+> income contributes this much,
+>
+> education contributes this much,
+>
+> and so on.
+>
+> These contribution values allow us to construct a local explanation for an individual prediction.
+>
+> In our auditor scenario, this is useful because we can look at the SHAP values and ask:
+>
+> **Was age one of the features that contributed strongly to this decision?**
+>
+> The paper's observation is that the answer we get can depend on how we represent age in the first place.”
 
 ---
 
-# Slide 6 - The Paper's Research Questions
+# Slide 6 — The Hidden Variable: Feature Representation
 
-### Title
+### What to say
 
-**So the Authors Ask Two Questions**
+> “And this brings us to what the paper calls the feature representation.
+>
+> Consider age.
+>
+> We can represent someone's age directly as 30.
+>
+> Or we could represent it as an age interval, such as 25 to 35.
+>
+> Or we could use larger age groups.
+>
+> Semantically, we're still talking about the same thing: **age**.
+>
+> But from the model's perspective, these are different representations.
+>
+> The same thing happens with categorical features.
+>
+> For example, race could initially have categories such as White, Black, Asian and Other.
+>
+> We could then regroup these categories into different combinations.
+>
+> So the important distinction is:
+>
+> **The semantic attribute stays the same, but its representation changes.**
+>
+> And the paper asks whether SHAP is sensitive to that difference.”
 
-Don't overload this slide.
+---
 
-### Put on slide
+# Slide 7 — Continuous Features: Bucketization
 
-Large numbered questions:
+### What to say
 
-### **1**
+> “For continuous features, the technique the authors focus on is called **bucketization**, or binning.
+>
+> There are two basic ways they discuss.
+>
+> The first is equi-width bucketization.
+>
+> Here, every interval has approximately the same numerical width.
+>
+> So if age ranges from 17 to 94, we divide that numerical range into intervals of equal size.
+>
+> The second is equi-depth bucketization.
+>
+> Here, instead of making the intervals equally wide, we try to put approximately the same number of observations into each bucket.
+>
+> So we're taking one continuous feature and replacing its precise value with a bucket.
+>
+> And the question is:
+>
+> **Does changing the number or boundaries of these buckets change what SHAP tells us about the feature?**”
 
+---
+
+# Slide 8 — Categorical Features: Encoding
+
+### What to say
+
+> “The same idea applies to categorical features.
+>
+> Initially, we could keep every category separate.
+>
+> For race, for example, we might have White, Black, Asian and Other as separate categories.
+>
+> But we could instead group categories together.
+>
+> For example, we could create a representation like White versus everyone else.
+>
+> Or Black versus everyone else.
+>
+> Or combine multiple categories into two or three groups.
+>
+> Again, we're not changing the underlying concept we're studying.
+>
+> We're changing its representation.
+>
+> And this gives us the central relationship of the paper:
+>
+> **Same semantic attribute → different representation → potentially different SHAP explanation.**”
+
+---
+
+# Slide 9 — Why Could Bucket Size Change SHAP?
+
+### What to say
+
+> “So why should bucketization affect SHAP at all?
+>
+> There are two intuitive reasons.
+>
+> First, bucket size changes the amount of information represented by the feature.
+>
+> With smaller buckets, we preserve more information about the original age.
+>
+> With larger buckets, more values are merged together, so the representation becomes coarser.
+>
+> Second, SHAP measures the contribution of the feature representation that it receives.
+>
+> So when we change that representation, we're changing the quantity whose contribution is being measured.
+>
+> Therefore, even though we still call the feature 'age', the actual representation that SHAP sees has changed.
+>
+> And that can change its contribution and its ranking.
+>
+> Now the authors want to determine whether this is just an isolated example, or whether it happens systematically.”
+
+---
+
+# Slide 10 — From Sensitivity to Exploitability
+
+### What to say
+
+> “This is where the paper's research questions become more precise.
+>
+> The first question is:
+>
 > **How sensitive are SHAP explanations to feature engineering?**
-
-### **2**
-
+>
+> In other words, if I change the representation, does the apparent importance of the feature change?
+>
+> The second question is more interesting:
+>
 > **Can this sensitivity be deliberately exploited?**
-
-Then at the bottom:
-
-```text
-Sensitivity  →  Exploitability
-```
-
-### What you say
-
-> “At this point, the paper essentially splits into two parts.
-> 
-> First, the authors ask: is this just one strange example, or is SHAP systematically sensitive to representation?
-> 
-> That's the first contribution.
-> 
-> Then comes the more concerning question.
-> 
-> If we know that representation changes SHAP, can someone deliberately choose a representation that makes a protected feature look less important?
-> 
-> That's the second contribution: the feature-engineering attack.”
-
-This is a very important transition.
+>
+> If I know that certain representations make a protected feature look less important, could I deliberately choose such a representation?
+>
+> But there's one more thing we need to consider.
+>
+> Suppose the SHAP values change.
+>
+> Does that mean the explanation is now meaningless?
+>
+> The authors therefore also measure something called **fidelity**.
+>
+> Fidelity measures the proportion of observations for which the explanation still corresponds to the model's original prediction.
+>
+> So ideally, an attack would reduce the apparent importance of a protected feature **without simply destroying the explanation altogether.**”
 
 ---
 
-# Slide 7 - How Did They Test It?
+# Slide 11 — Inference from the Paper
 
-### Title
+### What to say
 
-**The Experimental Setup**
+> “So at this point, we have established the problem conceptually.
+>
+> Now let's move from the intuition to the experiments.
+>
+> The authors want to determine whether this sensitivity actually appears on real datasets, and whether it can then be exploited deliberately.
+>
+> I'll first go through their experimental setup, then we'll look at the results.”
 
-### Put on slide
-
-Use four boxes:
-
-```text
-DATASETS
-──────────────
-ACS Income
-46,144 observations
-8 features
-
-ACS Public Coverage
-25,524 observations
-16 features
-```
-
-```text
-MODEL
-──────────────
-XGBoost
-
-Hyperparameter
-tuning for accuracy
-```
-
-```text
-PROTECTED
-FEATURES
-──────────────
-Age
-Race
-```
-
-```text
-EXPLANATION
-──────────────
-SHAP
-
-Compare:
-• SHAP value
-• SHAP rank
-• Fidelity
-```
-
-The dataset sizes and feature counts are from the paper.
-
-### Image
-
-Use a pipeline:
-
-```text
-ACS Dataset
-     ↓
-Feature Engineering
-     ↓
-XGBoost
-     ↓
-SHAP
-     ↓
-Compare explanations
-```
-
-### What you say
-
-> “The authors test this on two real-world datasets from the American Community Survey.
-> 
-> One predicts whether income is above 50 thousand dollars, and the other predicts public health insurance coverage.
-> 
-> They treat age and race as protected features.
-> 
-> They train XGBoost models and then use SHAP to evaluate the explanations.
-> 
-> And they look at three things: the SHAP value of the protected feature, its rank compared with other features, and something called fidelity.”
+This slide is basically a **chapter break**, so don't spend much time here.
 
 ---
 
-# Slide 8 - What Does Fidelity Mean?
+# Slide 12 — The Experimental Setup
 
-### Title
+### What to say
 
-**But Are These Explanations Still Faithful?**
-
-This slide is important because otherwise the audience may think:
-
-> “Of course SHAP changes — maybe the new explanation is simply wrong.”
-
-### Put on slide
-
-```text
-Prediction
-    │
-    ↓
-SHAP contributions
-    │
-    ├── Age       +0.37
-    ├── Income    +0.42
-    ├── Education +0.11
-    └── ...
-    │
-    ↓
-Can the contributions
-reconstruct the original prediction?
-```
-
-Then:
-
-> **Fidelity = fraction of explanations that remain faithful to the original prediction**
-
-The paper defines fidelity as the proportion of observations for which the explanation reconstructs/corresponds to the originally predicted outcome.
-
-### What you say
-
-> “This is an important detail.
-> 
-> The authors don't just say, 'the SHAP values changed, therefore something is wrong.'
-> 
-> They also check whether the explanation remains faithful to the original prediction.
-> 
-> In other words, can the SHAP contributions still account for the model's prediction?
-> 
-> This becomes especially important later, because the attack manages to reduce the apparent importance of protected features while maintaining high fidelity.”
+> “The authors use two real-world datasets from the American Community Survey.
+>
+> The first is **ACS Income**, which contains 46,144 observations and 8 features. The task is to predict whether an individual's income is above 50 thousand dollars.
+>
+> The second is **ACS Public Coverage**, which contains 25,524 observations and 16 features. Here, the task is to predict whether an individual is covered by public health insurance.
+>
+> For both datasets, the authors treat **age and race as protected features**.
+>
+> The categorical features are one-hot encoded.
+>
+> For the classifier, they use XGBoost and perform hyperparameter tuning for overall accuracy.
+>
+> Then they use SHAP to generate local explanations.
+>
+> And they evaluate the explanations using three things:
+>
+> **SHAP value**, which tells us the magnitude of feature importance;
+>
+> **SHAP rank**, which tells us where the protected feature sits relative to the other features;
+>
+> and **fidelity**, which tells us whether the explanation remains faithful to the original prediction.”
 
 ---
 
-# Slide 9 — Finding #1: Age Is Sensitive
+# Slide 13 — Finding #1: Age
 
-### Title
+### What to say
 
-**Finding 1: Age Can Move Dramatically in the SHAP Ranking**
+> “Let's start with the continuous feature: age.
+>
+> The authors take the age feature and represent it using different numbers of buckets.
+>
+> They then retrain the model using each representation and evaluate the resulting SHAP explanations.
+>
+> And we can see a clear trend.
+>
+> As the number of buckets increases, the average SHAP importance of age increases.
+>
+> The average rank of age also moves closer to the top.
+>
+> And the percentage of observations where age is the most important feature increases.
+>
+> So the representation of age has a substantial effect on how important age appears to SHAP.”
 
-### Put on slide
+### Then point at the graph
 
-I would use the paper's **Figure 4** here if you can extract it from the PDF.
-
-The paper reports that as the number of age buckets increases:
-
-- average SHAP importance changes
-    
-- average rank changes
-    
-- the percentage of observations where age is the most important feature changes
-    
-
-The paper also reports that age can shift by **as much as 20 rank positions** in some cases.
-
-### Visual
-
-Preferably:
-
-**Paper Figure 4**
-
-or recreate a simplified conceptual graph:
-
-```text
-Age importance
-     ↑
-     │                 ●
-     │             ●
-     │         ●
-     │      ●
-     │   ●
-     └────────────────────→
-       2  3  4  5  6  7
-             # buckets
-```
-
-And beside it:
-
-```text
-More buckets
-      ↓
-Age becomes more important
-```
-
-### What you say
-
-> “Now we get the first experimental result.
-> 
-> The authors vary how many buckets are used for age.
-> 
-> And SHAP changes substantially.
-> 
-> As the representation becomes more granular, age can become more important in the explanations.
-> 
-> The paper reports rank changes of up to around 20 positions in some cases.
-> 
-> So this isn't just a tiny numerical fluctuation.
-> 
-> **The explanation can materially change depending on how the feature was engineered.**”
+> “The important thing to notice here is not just that the value changes.
+>
+> **The ranking changes.**
+>
+> And ranking is particularly important in an audit because an auditor may look at the top few features and decide which features appear to drive the model.”
 
 ---
 
-# Slide 10 - Finding #2: Race Can Be Hidden
+# Slide 14 — Finding #1: Age — Inference
 
-### Title
+### What to say
 
-**And It Happens With Categorical Features Too**
+> “So what do we infer from this experiment?
+>
+> The more buckets we use, the more information about the original continuous age value we preserve.
+>
+> As a result, age becomes more prominent in the model's prediction and therefore in the SHAP explanation.
+>
+> But there's an important broader point here.
+>
+> The authors report that the relative importance of age can change by **as much as 20 rank positions** under different representations.
+>
+> And in cases where age was initially the most important feature, its importance frequently drops by around **3 to 5 positions** under some representations.
+>
+> So we're not talking about a tiny numerical difference.
+>
+> We're talking about potentially changing the conclusion an auditor could draw from the explanation.”
 
-### Put on slide
+### Transition
 
-Start with:
-
-```text
-Original race representation
-
-White
-Black
-Asian
-Other
-```
-
-Then:
-
-```text
-Merge categories
-
-White + Black
-Asian + Other
-```
-
-Then arrow:
-
-```text
-                ↓
-
-       Race becomes less important
-             according to SHAP
-```
-
-The paper specifically reports that merging categories can dramatically increase the rank of race, meaning lower apparent importance; in some cases, merging White with Black or White with Asian can reduce race's importance to nearly zero.
-
-### Image
-
-Use **paper Figure 7 or Figure 9** here.
-
-Figure 9 is particularly good because it visually shows the race ranking changing under different bucketizations.
-
-### What you say
-
-> “And this isn't limited to continuous features like age.
-> 
-> The authors do the same experiment with race.
-> 
-> Instead of treating White, Black, Asian and Other as separate categories, they try different combinations.
-> 
-> And again, the SHAP importance changes.
-> 
-> In some representations, race becomes much less important according to SHAP.
-> 
-> So now we have seen the same phenomenon for both continuous and categorical features.”
+> “But age is a continuous feature. What happens with categorical features?”
 
 ---
 
-# Slide 11 - Now the Story Changes
+# Slide 15 — Finding #2: Race
 
-### Title
+### What to say
 
-**But What If Someone Does This Deliberately?**
+> “The authors perform a similar experiment with the categorical feature race.
+>
+> They start with four categories:
+>
+> White, Black, Asian and Other.
+>
+> Then they try different representations.
+>
+> One approach is called **one-vs-rest**, where one category is isolated and all the remaining categories are grouped together.
+>
+> For example:
+>
+> White versus everyone else,
+>
+> Black versus everyone else,
+>
+> Asian versus everyone else,
+>
+> and so on.
+>
+> They also consider different combinations where multiple race categories are merged.
+>
+> And again, the SHAP importance of race changes.
+>
+> Overall, the average SHAP value of race decreases compared with the original representation.
+>
+> More importantly, the fraction of observations for which race is the most important feature can decrease substantially.”
 
-This should be a very visual transition slide.
+### Important nuance to say
 
-### Put on slide
-
-Large text:
-
-> **Until now, the representation was just a preprocessing choice.**
-> 
-> **What if it becomes a strategy?**
-
-Then:
-
-```text
-Normal feature engineering
-             ↓
-     Changes SHAP
-             ↓
-       We discover:
-             ↓
-    This can be exploited
-```
-
-### Image
-
-Return to your auditor.
-
-Show:
-
-```text
-                    VENDOR
-                      │
-        ┌─────────────┼─────────────┐
-        ↓             ↓             ↓
-      DATA          MODEL       PIPELINE
-   ENGINEERING
-                      │
-                      ↓
-                  AUDITOR
-                      │
-                     SHAP
-```
-
-### What you say
-
-> “This is where the paper moves from observation to attack.
-> 
-> So far, we've seen that ordinary representation choices can change SHAP.
-> 
-> But remember our auditor from the beginning.
-> 
-> The auditor sees the preprocessed data and the model.
-> 
-> The vendor controls the data-engineering pipeline.
-> 
-> So what happens if the vendor deliberately chooses a representation that makes a protected feature appear less important?”
-
-Pause.
-
-> “The authors call this a **feature-engineering attack on SHAP**.”
+> “There's also an interesting observation for the Asian-versus-rest case.
+>
+> Although race becomes the most important feature for fewer observations, the average SHAP value among those remaining observations can actually be higher.
+>
+> So simply looking at the overall average could hide what is happening to the subset of individuals for whom race still matters most.”
 
 ---
 
-# Slide 12 - The Feature-Engineering Attack
+# Slide 16 — Inference
 
-### Title
+### What to say
 
-**How Do You Hide a Feature From SHAP?**
-
-### Put on slide
-
-Use a 4-step attack loop:
-
-```text
-        ① Choose representation
-                  ↓
-        ② Generate SHAP
-                  ↓
-        ③ Measure protected
-           feature importance
-                  ↓
-        ④ Check fidelity
-                  │
-                  └──────→ Optimize again
-```
-
-For age:
-
-```text
-Bucket boundaries
-       ↓
-Bayesian Optimization
-       ↓
-Find representation
-that reduces SHAP rank
-```
-
-The paper uses Bayesian Optimization for continuous age bucket boundaries, with a fidelity constraint. It tunes bucket boundaries and evaluates SHAP rank.
-
-### What you say
-
-> “For a continuous feature like age, the authors formulate this as an optimization problem.
-> 
-> Instead of choosing ordinary bucket boundaries, they search for boundaries that reduce the SHAP importance of age.
-> 
-> They use Bayesian Optimization because evaluating SHAP is expensive and the search space is essentially a black-box optimization problem.
-> 
-> But there's a constraint:
-> 
-> **We don't want to destroy the explanation's fidelity.**
-> 
-> So the attack tries to reduce the apparent importance of age while keeping the explanations faithful.”
+> “So now we have seen the same basic phenomenon with two different kinds of features.
+>
+> For age, changing the bucketization changes the SHAP importance and ranking.
+>
+> For race, changing how categories are grouped can also reduce its apparent importance.
+>
+> So the first major conclusion is:
+>
+> **SHAP is sensitive to how features are represented.**
+>
+> And now we reach the more interesting question.
+>
+> If this representation affects what an auditor sees, could someone deliberately choose a representation that hides the importance of a protected feature?
+>
+> That's where the paper moves from sensitivity to an actual attack.”
 
 ---
 
-# Slide 13 - Does the Attack Actually Work?
+# Slide 17 — Feature-Engineering Attack
 
-### Title
+### What to say
 
-**The Concerning Part: The Prediction Doesn't Have to Change Much**
+> “Now let's go back to our original auditor scenario.
+>
+> Imagine there are two parties.
+>
+> The first is the **vendor**.
+>
+> The vendor has access to the data, the model, and the complete data-engineering and modeling pipeline.
+>
+> The second is the **auditor**.
+>
+> The auditor receives the preprocessed data and the model, and can generate SHAP explanations, but does not control the data-engineering process.
+>
+> The vendor's adversarial goal is very specific:
+>
+> It wants the model to use a protected feature, but it doesn't want that protected feature to appear highly important when the auditor looks at SHAP.
+>
+> And the paper shows that feature representation can potentially be used to achieve exactly this.”
 
-This should be one of your strongest slides.
+---
 
-### Put on slide
+# Slide 18 — Bayesian Optimization Can Hide Protected Features
 
-For age:
+### What to say
+
+> “For a continuous feature such as age, the authors formulate this as an optimization problem.
+>
+> Instead of manually choosing bucket boundaries, we want to search for bucket boundaries that make age appear less important according to SHAP.
+>
+> But we also want to maintain explanation fidelity.
+>
+> So there are essentially two objectives:
+>
+> **reduce the SHAP importance or rank of age,**
+>
+> while **maintaining sufficient fidelity.**
+>
+> The authors use Bayesian Optimization to search for these bucket boundaries.
+>
+> This is appropriate because evaluating SHAP for each possible representation can be computationally expensive, and Bayesian Optimization is designed for this kind of expensive black-box optimization problem.”
+
+---
+
+# Slide 19 — Bayesian Optimization Can Hide Protected Features
+
+### What to say
+
+> “This slide shows the actual attack process.
+>
+> The optimizer searches over different representations of age.
+>
+> For each representation, we calculate the SHAP rank of age and the fidelity of the resulting explanations.
+>
+> The optimizer then uses this information to search for better representations.
+>
+> In the experiments, the authors fix the minimum and maximum age values at 17 and 94 and optimize the bucket boundaries.
+>
+> They run 300 optimization iterations.
+>
+> Importantly, they impose a fidelity constraint: the attack must have fidelity at least as good as the equi-width bucketization baseline.
+>
+> So the goal isn't simply:
+>
+> *'Make age disappear from SHAP.'*
+>
+> It is:
+>
+> *'Make age less important according to SHAP while still producing a sufficiently faithful explanation.'*”
+
+---
+
+# Slide 20 — Final Takeaway
+
+### What to say
+
+> “So let's come back to the main idea.
+>
+> The paper shows that SHAP explanations depend on how features are represented.
+>
+> This is important because feature representation is usually treated as a data-engineering decision, something that happens before we even think about explainability.
+>
+> But the experiments show that these choices can directly affect the explanation.
+>
+> And more importantly, the authors show that this sensitivity can be deliberately exploited.
+>
+> An adversary can search for a representation that reduces the apparent importance of a protected feature while maintaining relatively high fidelity.
+>
+> So the main lesson is not that SHAP is useless.
+>
+> The more precise lesson is:
+>
+> **An explanation cannot be considered independently of the feature representation that produced it.**
+>
+> Therefore, when auditing an AI system, we shouldn't inspect only the model and the final SHAP explanation.
+>
+> We also need to consider the **data-engineering pipeline and the feature representations used by that pipeline.**”
+
+---
+
+# Slide 21 — Questions
+
+Don't just say:
+
+> “Thank you. Any questions?”
+
+Instead, you can close the story first:
+
+> “And if we go back to our auditor from the beginning, the original question was:
+>
+> **Did the model use Ann's age?**
+>
+> We might think SHAP gives us a direct answer.
+>
+> But after seeing these experiments, we know that the answer can depend on how age was represented.
+>
+> And that's really the central message of this paper.
+>
+> Thank you. I'm happy to take questions.”
+
+---
+
+## One thing I would change in your current delivery
+
+There is a **very important distinction** you should emphasize when presenting Slides 13–19.
+
+The paper has **two different experimental settings**:
+
+### Sensitivity experiment
+
+Here they change the representation in **both training and test/explainer data**:
 
 ```text
-                 AGE
-
-Original       ────────────────
 representation
-
-Optimized      ────
-representation
-
-       ↓ SHAP importance/rank
-
-Protected feature
-appears LESS important
-
-       BUT
-
-Fidelity ≥ 88%
-```
-
-For race:
-
-```text
-                 RACE
-
-Category merging
-       ↓
-SHAP rank ↓ importance
-       ↓
-Fidelity ≥ 98%
-```
-
-The paper reports age attack fidelity of at least **88%**, while the race bucketization attacks had at least **98%** perfect-fidelity explanations.
-
-### Better image
-
-Use **paper Figure 8** for age.
-
-It directly shows:
-
-- Base
-    
-- Equi-width
-    
-- Bayesian Optimization
-    
-- number of buckets
-    
-- average rank
-    
-
-The paper states that the attack can substantially increase the rank of age while maintaining fidelity at least as high as equi-width bucketization.
-
-### What you say
-
-> “And this is the key result of the paper.
-> 
-> The attack works.
-> 
-> With age, the authors can find bucketizations that push age down in the SHAP ranking, while maintaining fidelity of at least 88 percent.
-> 
-> With race, the bucketization attacks have at least 98 percent perfect fidelity.
-> 
-> So the problem isn't simply that we're producing obviously broken explanations.
-> 
-> **We can change what SHAP tells the auditor while retaining high explanation fidelity.**”
-
----
-
-# Slide 14 - Back to the Auditor
-
-### Title
-
-**What Does the Auditor See?**
-
-This brings the story back to Slide 1.
-
-### Put on slide
-
-Split screen:
-
-### Before
-
-```text
-SHAP
-
-Age        ██████████
-Income     █████
-Education  ███
-
-"Age looks important"
-```
-
-### After representation change
-
-```text
-SHAP
-
-Income     ███████
-Education  █████
-Age        ██
-
-"Age looks less important"
-```
-
-Then underneath:
-
-```text
-           SAME UNDERLYING MODEL
-                    │
-                    ↓
-          DIFFERENT REPRESENTATION
-                    │
-                    ↓
-             DIFFERENT STORY
-```
-
-Be careful with “same model”: this specifically applies to the **attack setting**, where the paper trains on original data, keeps the model fixed, and changes only the explainer input representation.
-
-### What you say
-
-> “Let's return to our auditor.
-> 
-> The auditor isn't necessarily looking at the raw data or the complete engineering pipeline.
-> 
-> They are looking at the model and the explanation.
-> 
-> If the representation supplied to the explainer changes, the apparent importance of the protected feature can change.
-> 
-> And in the attack setting, the authors show that this can happen **without retraining the model**.
-> 
-> So the auditor could receive a perfectly valid-looking explanation that tells a very different story.”
-
----
-
-# Slide 15 - What Should We Take Away?
-
-### Title
-
-**So… Can We Trust SHAP?**
-
-I would **not** put:
-
-> ❌ SHAP cannot be trusted.
-
-That is stronger than what the paper establishes.
-
-Instead put:
-
-> **SHAP may be faithful to the representation it is given.**
-> 
-> **But the representation itself can influence the explanation.**
-
-Then:
-
-```text
-              MODEL
-                │
-                ↓
-        DATA REPRESENTATION
-                │
-                ↓
-              SHAP
-                │
-                ↓
-          EXPLANATION
-```
-
-Highlight the middle:
-
-> **The data-engineering pipeline matters.**
-
-### What you say
-
-> “So does this mean we should stop using SHAP?
-> 
-> No. That's not really the conclusion of the paper.
-> 
-> The more precise lesson is that SHAP explanations are not independent of feature representation.
-> 
-> SHAP can be faithful to the representation it receives.
-> 
-> But if that representation itself is changed, the explanation can change.
-> 
-> Therefore, if we're using explanations for auditing or fairness analysis, we need to pay attention not just to the model, but also to the data-engineering pipeline that produces the representation.”
-
----
-
-# Slide 16 - The Bigger Lesson
-
-### Title
-
-**Don't Audit Only the Model. Audit the Pipeline.**
-
-### Put on slide
-
-This should be your final visual:
-
-```text
-                 ┌──────────────┐
-                 │     DATA     │
-                 └──────┬───────┘
-                        ↓
-              ┌──────────────────┐
-              │ DATA ENGINEERING │
-              │                  │
-              │ encoding         │
-              │ bucketization     │
-              │ grouping          │
-              └────────┬─────────┘
-                       ↓
-                ┌────────────┐
-                │   MODEL    │
-                └─────┬──────┘
-                      ↓
-                  ┌───────┐
-                  │ SHAP  │
-                  └───┬───┘
-                      ↓
-                EXPLANATION
-```
-
-At the bottom:
-
-> **The explanation depends on more than the model.**
-
-### What you say
-
-> “And I think this is the biggest takeaway from the paper.
-> 
-> When we audit an AI system, we often think about the model:
-> 
-> Is the model accurate?
-> 
-> Is the model fair?
-> 
-> Can we explain its predictions?
-> 
-> But this paper shows that there is another layer we need to think about:
-> 
-> **How was the data represented before it reached the model and the explainer?**
-> 
-> Because seemingly harmless engineering choices can change the explanation.
-> 
-> And if those choices can be manipulated, then they become part of the audit surface.
-> 
-> So the final message is:
-> 
-> **Don't audit only the model. Audit the pipeline that produces the explanation.**”
-
----
-
-# The overall visual strategy
-
-I would **not** put lots of screenshots from the paper on every slide. Instead, mix three types of visuals.
-
-### 1. Story visuals — Slides 1, 2, 11, 14
-
-Create your own clean diagrams.
-
-For example:
-
-```text
-AUDITOR
-   ↓
-MODEL
-   ↓
-PREDICTION
-   ↓
-SHAP
-   ↓
-"Did age matter?"
-```
-
-These make the talk feel like a story.
-
----
-
-### 2. Concept visuals — Slides 3–6
-
-Use simple diagrams:
-
-```text
-Age = 37
-    ↓
-Age = 30–40
-    ↓
-Different representation
-```
-
-and:
-
-```text
-White
-Black
-Asian
-Other
-
       ↓
-
-White + Black
-Asian + Other
+training data ──→ retrain model
+      ↓
+test data ──────→ SHAP
 ```
 
-Don't use complicated paper figures here.
+So this demonstrates:
 
----
+> **Feature engineering changes SHAP explanations.**
 
-### 3. Actual paper results — Slides 9, 10, 12, 13
+### Attack experiment
 
-Here you **should use the paper's figures** because you're presenting the actual experimental evidence.
-
-I'd prioritize:
-
-|Slide|Paper figure|
-|---|---|
-|9 — Age sensitivity|**Figure 4**|
-|10 — Race sensitivity|**Figure 7 / Figure 9**|
-|12 — Attack|**Figure 8 / attack formulation**|
-|13 — Attack works|**Figure 8 + Table 2/3 values**|
-
-This gives you a nice progression:
-
-**Story → Concept → Evidence → Attack → Evidence → Lesson**
-
----
-
-# One important improvement to the original 14-slide flow
-
-I would actually make it **16 slides**, because **fidelity deserves its own slide**.
-
-The narrative then becomes:
+Here they:
 
 ```text
-ACT 1 — THE QUESTION
-
-1. Auditor's Problem
-2. Something Strange Happens
-3. What Exactly Is SHAP?
-
-        ↓
-
-ACT 2 — THE HIDDEN PROBLEM
-
-4. Feature Representation
-5. Why Representation Matters
-6. Research Questions
-7. Experimental Setup
-8. What Is Fidelity?
-
-        ↓
-
-ACT 3 — THE EVIDENCE
-
-9. Age Is Sensitive
-10. Race Is Sensitive
-
-        ↓
-
-ACT 4 — THE ATTACK
-
-11. What If This Is Deliberate?
-12. How the Attack Works
-13. The Attack Works
-
-        ↓
-
-ACT 5 — THE CONSEQUENCE
-
-14. Back to the Auditor
-15. Can We Trust SHAP?
-16. Don't Audit Only the Model
+Original data
+     ↓
+TRAIN MODEL
+     ↓
+FIX MODEL
+     ↓
+change only explainer input representation
+     ↓
+SHAP
 ```
 
-That gives the presentation a much more natural **“wait → discover → investigate → escalate → conclude”** structure rather than:
+So this demonstrates something stronger:
 
-> Introduction → Related Work → Methodology → Results → Conclusion.
+> **Different explanations can be produced for the same fixed model without retraining it.**
 
-And for this paper, I think that storytelling approach will make the **central idea — “same model, different representation, different explanation” — stick much better**.
+When you reach **Slide 17**, explicitly say:
 
----
+> “Notice that the attack setting is different from the sensitivity experiment. Here, the model is already trained and fixed. We modify the representation supplied to the explainer, allowing different SHAP explanations to be produced for the same model.”
 
