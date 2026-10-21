@@ -1,0 +1,2 @@
+Examples,Validity (%),Mean edit distance (words),Mean relative edit distance,Mean generation time (s),Total generation time (s),Mean prompt tokens,Mean generated tokens,Total LLM calls
+50,46.0,9.28,0.49219020197482977,2.1200016579200294,106.00008289600146,90.42,23.3,50
