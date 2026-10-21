@@ -1,0 +1,2 @@
+Examples,Candidates per example,Total candidates generated,Validity (%),Candidate validity (%),Mean edit distance (selected),Mean edit distance (valid selected),Mean relative edit distance (selected),Mean valid candidates per example,Total generation time (s),Mean generation time per example (s),Mean prompt tokens per candidate,Mean generated tokens per candidate,Total generated tokens,Generation batches,Candidate generation attempts
+50,5,250,52.0,36.0,6.5,7.5,0.35485197557499004,1.8,122.6828117440009,2.453656234880018,90.42,23.28,5820,50,250
