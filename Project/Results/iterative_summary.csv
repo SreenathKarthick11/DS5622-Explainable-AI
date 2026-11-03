@@ -1,2 +1,0 @@
-Examples,Maximum attempts per example,Total LLM calls,Validity (%),Attempt-level validity (%),Mean attempts per example,Mean edit distance (selected),Mean edit distance (valid only),Mean generation time per example (s),Total generation time (s),Mean prompt tokens per call,Mean generated tokens per call,Total generated tokens
-50,6,71,94.0,66.2,1.42,11.54,11.5106,3.275,163.7502,167.39,23.1,1640
