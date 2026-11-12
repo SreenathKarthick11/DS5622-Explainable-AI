@@ -1,5 +1,0 @@
-Method,Validity (%),95% CI,Robust validity (%),Median edit (valid),Semantic sim (valid),"PPL ratio (valid, median)",Judge score (valid),Actionable validity (%),Actionable | valid (%),Calls / valid CF,Tokens / valid CF,Tokens / actionable CF,Mean flip confidence (valid)
-One-shot,38.0,"[32.2, 44.2]",36.8,5.0,0.84,1.01,2.16,3.2,8.42,2.63,277.38,3293.88,0.98
-Multi-candidate (K=5),57.2,"[51.0, 63.2]",53.2,4.0,0.86,1.07,2.32,7.2,12.59,8.74,922.01,7324.89,0.97
-Iterative (previous output),73.2,"[67.4, 78.3]",67.6,5.0,0.86,1.02,2.18,4.8,6.56,3.57,513.54,7831.42,0.97
-Iterative (full history),66.0,"[59.9, 71.6]",60.8,5.0,0.85,1.01,2.19,4.8,7.27,4.24,819.16,11263.5,0.97
