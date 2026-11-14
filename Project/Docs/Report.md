@@ -23,7 +23,8 @@ Our extension is deliberately simple. If the problem is that generated counterfa
 | Q2 | What trade-offs arise between validity, amount of modification and computational cost? |
 | Q3 | Does feedback accumulated from earlier failures (a memory of all failed attempts for the input) improve validity beyond feeding back only the most recent failure? |
 
-> [!Caution] Terminology: feedback and feedback memory
+> [!Caution]
+> **Terminology: feedback and feedback memory**
 > *Feedback* refers to the classifier's predicted label and confidence for a failed candidate. In **iterative repair (previous output)**, the LLM receives only the latest failure, while **iterative repair (full history)** provides a *feedback memory* containing all previous failures and their classifier verdicts for the current input. Transferring this feedback across inputs through learned guidelines is left for [[#7. Future Work]].
 
 ---
@@ -177,7 +178,8 @@ All numbers come from the same 200 sentences. Where we quote confidence interval
 
 *Figure 1. Left: validity. Middle: mean word edit distance over valid counterfactuals. Right: tokens per example.*
 
-> [!Note] Answer to Q1
+> [!Note]
+> **Answer to Q1**
 > Iterative repair with previous-output feedback achieves the highest validity (73.0%), improving by 33.5 percentage points over one-shot and 13.5 points over multi-candidate selection. Its confidence interval does not overlap with one-shot and narrowly exceeds multi-candidate's upper bound, suggesting a stronger improvement that warrants further statistical validation.
 
 ### 4.2 Cost-adjusted view
@@ -193,7 +195,8 @@ Dividing computational cost by validity estimates the cost of obtaining one vali
 
 One-shot is the cheapest per valid output but achieves only 39.5% validity. Among higher-coverage methods, previous-output iterative repair uses approximately 43% fewer tokens than multi-candidate selection while achieving higher validity. Multi-candidate selection produces smaller edits (5.24 vs. 6.56 words) because it explicitly selects the candidate with minimum edit distance.
 
-> [!Note] Answer to Q2
+> [!Note]
+> **Answer to Q2**
 > One-shot generation minimises cost but has low validity, while multi-candidate selection produces smaller edits at a substantially higher computational cost. Previous-output iterative repair offers the best overall balance, achieving the highest validity (73.0%) at a lower cost than multi-candidate selection.
 
 ### 4.3 Where do the successes come from?
@@ -216,8 +219,9 @@ Full-history feedback does not improve validity over previous-output feedback. I
 
 However, the confidence intervals overlap substantially (previous output: [66.5, 78.7]; full history: [58.7, 71.7]) and the experiment uses a single seed. At the second attempt, both methods receive exactly the same information, yet recover 42 and 35 examples respectively. This suggests that prompt wording and sampling variation may contribute to the observed difference.
 
-> [!Note] Answer to Q3
-> **No**. Full-history repair achieves 65.5% validity compared with 73.0% for previous-output repair, while consuming 44% more tokens. We find no evidence that retaining all previous failures improves validity; however, further experiments are needed to establish whether it consistently hurts performance.
+> [!Note]
+> **Answer to Q3**
+> No. Full-history repair achieves 65.5% validity compared with 73.0% for previous-output repair, while consuming 44% more tokens. We find no evidence that retaining all previous failures improves validity; however, further experiments are needed to establish whether it consistently hurts performance.
 
 ### 4.5 Actionability
 
